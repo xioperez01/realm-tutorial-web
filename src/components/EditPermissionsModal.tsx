@@ -12,121 +12,124 @@ import { uiColors } from "@leafygreen-ui/palette";
 import { useRealmApp } from "../RealmApp";
 
 function useTeamMembers() {
-	const [teamMembers, setTeamMembers] = React.useState(null);
-	const [newUserEmailError, setNewUserEmailError] = React.useState(null);
-	const app = useRealmApp();
-	const { addTeamMember, removeTeamMember, getMyTeamMembers } = app.functions;
-	const updateTeamMembers = () => {
-		getMyTeamMembers().then(setTeamMembers);
-	};
-	// display team members on load
-	React.useEffect(updateTeamMembers, [getMyTeamMembers]);
-	return {
-		teamMembers,
-		errorMessage: newUserEmailError,
-		addTeamMember: async (email: any) => {
-			const { error } = await addTeamMember(email);
-			if (error) {
-				setNewUserEmailError(error);
-				return { error };
-			} else {
-				updateTeamMembers();
-			}
-		},
-		removeTeamMember: async (email: any) => {
-			await removeTeamMember(email);
-			updateTeamMembers();
-		},
-	};
+  const [teamMembers, setTeamMembers] = React.useState(null);
+  const [newUserEmailError, setNewUserEmailError] = React.useState(null);
+  const app = useRealmApp();
+  const { addTeamMember, removeTeamMember, getMyTeamMembers } = app.functions;
+  const updateTeamMembers = () => {
+    getMyTeamMembers().then(setTeamMembers);
+  };
+  // display team members on load
+  React.useEffect(updateTeamMembers, []);
+  return {
+    teamMembers,
+    errorMessage: newUserEmailError,
+    addTeamMember: async (email: any) => {
+      const { error } = await addTeamMember(email);
+      if (error) {
+        setNewUserEmailError(error);
+        return { error };
+      } else {
+        updateTeamMembers();
+      }
+    },
+    removeTeamMember: async (email: any) => {
+      await removeTeamMember(email);
+      updateTeamMembers();
+    },
+  };
 }
 
 export default function EditPermissionsModal({
-	isEditingPermissions,
-	setIsEditingPermissions,
-}: { isEditingPermissions: any, setIsEditingPermissions: any }) {
-	const {
-		teamMembers,
-		errorMessage,
-		addTeamMember,
-		removeTeamMember,
-	} = useTeamMembers();
-	return (
-		<Modal
-			open={isEditingPermissions}
-			setOpen={setIsEditingPermissions}
-			size="small"
-		>
-			<ContentContainer>
-				<ModalHeading>Team Members</ModalHeading>
-				<ModalText>
-					These users can add, read, modify, and delete tasks in your project
+  isEditingPermissions,
+  setIsEditingPermissions,
+}: {
+  isEditingPermissions: any;
+  setIsEditingPermissions: any;
+}) {
+  const {
+    teamMembers,
+    errorMessage,
+    addTeamMember,
+    removeTeamMember,
+  } = useTeamMembers();
+  return (
+    <Modal
+      open={isEditingPermissions}
+      setOpen={setIsEditingPermissions}
+      size="small"
+    >
+      <ContentContainer>
+        <ModalHeading>Team Members</ModalHeading>
+        <ModalText>
+          These users can add, read, modify, and delete tasks in your project
         </ModalText>
-				<ModalText>Add a new user by email:</ModalText>
-				<AddTeamMemberInput
-					addTeamMember={addTeamMember}
-					errorMessage={errorMessage}
-				/>
-				<List>
-					{teamMembers?.length ? (
-						teamMembers.map((teamMember: any) => {
-							return (
-								<ListItem key={teamMember._id}>
-									<TeamMemberContainer>
-										<TeamMemberName>{teamMember.name}</TeamMemberName>
-										<IconButton
-											aria-label="remove-team-member-button"
-											className="remove-team-member-button"
-											onClick={async () => {
-												await removeTeamMember(teamMember.name);
-											}}
-										>
-											<XIcon />
-										</IconButton>
-									</TeamMemberContainer>
-								</ListItem>
-							);
-						})
-					) : (
-							<ModalText>No team members</ModalText>
-						)}
-				</List>
-			</ContentContainer>
-		</Modal>
-	);
+        <ModalText>Add a new user by email:</ModalText>
+        <AddTeamMemberInput
+          addTeamMember={addTeamMember}
+          errorMessage={errorMessage}
+        />
+        <List>
+          {teamMembers?.length ? (
+            teamMembers.map((teamMember: any) => {
+              return (
+                <ListItem key={teamMember._id}>
+                  <TeamMemberContainer>
+                    <TeamMemberName>{teamMember.name}</TeamMemberName>
+                    <IconButton
+                      aria-label="remove-team-member-button"
+                      className="remove-team-member-button"
+                      onClick={async () => {
+                        await removeTeamMember(teamMember.name);
+                      }}
+                    >
+                      <XIcon />
+                    </IconButton>
+                  </TeamMemberContainer>
+                </ListItem>
+              );
+            })
+          ) : (
+            <ModalText>No team members</ModalText>
+          )}
+        </List>
+      </ContentContainer>
+    </Modal>
+  );
 }
 
-function AddTeamMemberInput({ addTeamMember, errorMessage }: { addTeamMember: any, errorMessage: any}) {
-	const [inputValue, setInputValue] = React.useState("");
-	return (
-		<Row>
-			<InputContainer>
-				<TextInput
-					type="email"
-					aria-labelledby="team member email address"
-					placeholder="some.email@example.com"
-					state={errorMessage ? "error" : "none"}
-					errorMessage={errorMessage ?? "Foo"}
-					onChange={(e) => {
-						setInputValue(e.target.value);
-					}}
-					value={inputValue}
-				/>
-			</InputContainer>
-			<Button
-				disabled={!inputValue}
-				onClick={async () => {
-					const result = await addTeamMember(inputValue);
-					if (!result?.error) {
-						setInputValue("");
-					}
-				}}
-				styles={{ height: "36px" }}
-			>
-				<PlusIcon />
+function AddTeamMemberInput({ addTeamMember, errorMessage }: { addTeamMember: any, errorMessage: any }) {
+  const [inputValue, setInputValue] = React.useState("");
+  return (
+    <Row>
+      <InputContainer>
+        <TextInput
+          type="email"
+          aria-labelledby="team member email address"
+          placeholder="some.email@example.com"
+          state={errorMessage ? "error" : "none"}
+          errorMessage={errorMessage ?? "Foo"}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+          }}
+          value={inputValue}
+        />
+      </InputContainer>
+      <Button
+        disabled={!inputValue}
+        onClick={async () => {
+          const result = await addTeamMember(inputValue);
+          if (!result?.error) {
+            setInputValue("");
+          }
+        }}
+        styles={{ height: "36px" }}
+      >
+        <PlusIcon />
         Add User
       </Button>
-		</Row>
-	);
+    </Row>
+  );
 }
 
 const Button = styled(LGButton)`
@@ -158,7 +161,7 @@ const List = styled.ul`
   margin: 0;
 `;
 const ListItem = styled.li(
-	(props) => css`
+  (props) => css`
     padding: 8px 12px;
     border-radius: 8px;
     :hover {

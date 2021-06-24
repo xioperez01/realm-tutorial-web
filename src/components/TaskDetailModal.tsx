@@ -4,7 +4,15 @@ import Modal from "@leafygreen-ui/modal";
 import ButtonGroup from "./ButtonGroup";
 import useChangeTaskStatusButton from "./useChangeTaskStatusButton";
 
-export default function TaskDetailModal({ project, task, unselectTask }: { project: any, task: any, unselectTask: any }) {
+export default function TaskDetailModal({
+  project,
+  task,
+  unselectTask,
+}: {
+  project: any;
+  task: any;
+  unselectTask: any;
+}) {
   const ChangeTaskStatusButton = useChangeTaskStatusButton(project);
   return (
     <Modal
@@ -14,7 +22,7 @@ export default function TaskDetailModal({ project, task, unselectTask }: { proje
       {task && (
         <>
           <TaskContent task={task} />
-          <ButtonGroup direction="row">
+          <ButtonGroup dir="row">
             {task.status === "Open" && (
               <ChangeTaskStatusButton
                 task={task}

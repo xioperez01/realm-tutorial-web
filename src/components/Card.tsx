@@ -10,7 +10,7 @@ const Layout = styled.div`
   text-align: left;
 `;
 
-export default function Card({ children, ...props }: { children: any}) {
+export default function Card({ children, ...props }: { children: any }) {
   return (
     <LGCard {...props}>
       <Layout>{children}</Layout>

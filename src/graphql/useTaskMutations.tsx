@@ -91,19 +91,19 @@ function useUpdateTask(project: any) {
   const updateTask = async (task: any, updates: any) => {
     const { updatedTask } = await updateTaskMutation({
       variables: { taskId: task._id, updates },
-		});
-		return updatedTask
+    });
+    return updatedTask;
   };
   return updateTask;
 }
 
-function useDeleteTask(project:any) {
+function useDeleteTask(project: any) {
   const [deleteTaskMutation] = useMutation(DeleteTaskMutation);
-  const { deleteTask } = async (task:any) => {
-		const { deletedTask } = await deleteTaskMutation({
-			variables: { taskId: task._id },
-		});
-		return deletedTask
-	};
+  const deleteTask = async (task: any) => {
+    const { deletedTask } = await deleteTaskMutation({
+      variables: { taskId: task._id },
+    });
+    return deletedTask;
+  };
   return deleteTask;
 }

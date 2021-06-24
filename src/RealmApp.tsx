@@ -1,5 +1,4 @@
 import React from "react";
-import { State } from "@leafygreen-ui/text-input";
 import * as Realm from "realm-web";
 
 const RealmAppContext = React.createContext(defaultValue);
@@ -14,15 +13,8 @@ export const useRealmApp = () => {
   return app;
 };
 
-export const RealmAppProvider = ({
-  appId,
-  children,
-}: {
-  appId: string;
-  children: any;
-}) => {
+export const RealmAppProvider = ({ appId, children }: { appId: string, children: any }) => {
   const [app, setApp] = React.useState(new Realm.App(appId));
-
   React.useEffect(() => {
     setApp(new Realm.App(appId));
   }, [appId]);
@@ -34,7 +26,6 @@ export const RealmAppProvider = ({
     // If successful, app.currentUser is the user that just logged in
     setCurrentUser(app.currentUser);
   }
-
   async function logOut() {
     // Log out the currently active user
     await app.currentUser?.logOut();
